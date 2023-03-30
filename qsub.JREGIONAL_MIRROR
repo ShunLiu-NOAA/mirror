@@ -1,0 +1,52 @@
+#!/bin/bash
+
+#PBS -A RRFS-DEV
+#PBS -q dev_transfer
+#PBS -l select=1:ncpus=1:mem=8G
+#PBS -l walltime=5:59:00
+#PBS -j oe -o /lfs/h2/emc/ptmp/emc.lam/mirror/rrfs_mirror_20230310.out
+#PBS -N mirror_0310
+
+
+module purge
+module load envvar/1.0
+module load prod_util/2.0.10
+set -x
+
+# mirror  RRFSUPP files from prod to dev
+PDY=20230316
+#cyc=02
+
+CURRENTDATE=$PDY
+
+mysite=$(cat /etc/cluster_name)
+primary=$(head -1 /lfs/h1/ops/prod/config/prodmachinefile | cut -d ":" -f2-)
+backup=$(head -2 /lfs/h1/ops/prod/config/prodmachinefile | tail -1 | cut -d ":" -f2-)
+
+desmachine=emc.lam@ddxfer.wcoss2.ncep.noaa.gov
+
+proddir=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs_a.${PDY}
+destination=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.3.8_cactus/prod
+#destination1=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.3.8_dogwood/prod
+#proddir1=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs_a.${PDY}
+rsync -arv $proddir $desmachine:$destination
+
+
+exit
+for hourback  in 1 2 3 4 5 6
+do
+  YYYYMMDDHH=`$NDATE -$hourback`
+
+  PDY=`echo ${YYYYMMDDHH} | cut -c1-8`
+  cyc=`echo ${YYYYMMDDHH} | cut -c9-10`
+
+  proddir=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs_a.${PDY}/${cyc}
+  proddir1=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs_a.${PDY}
+  destination=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.3.8_cactus/prod/rrfs_a.${PDY}
+  destination1=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.3.8_cactus/prod
+  touch $proddir1/dummy
+  rsync -aq $proddir1/dummy $desmachine:$destination/
+  rsync -arv $proddir $desmachine:$destination
+done
+
+exit

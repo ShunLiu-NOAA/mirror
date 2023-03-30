@@ -1,0 +1,50 @@
+#!/bin/bash
+
+module purge
+module load envvar/1.0
+module load prod_util/2.0.10
+set -x
+
+# mirror  RRFSUPP files from prod to dev
+#PDY=20230308
+#cyc=02
+
+CURRENTDATE=$PDY
+
+mysite=$(cat /etc/cluster_name)
+primary=$(head -1 /lfs/h1/ops/prod/config/prodmachinefile | cut -d ":" -f2-)
+backup=$(head -2 /lfs/h1/ops/prod/config/prodmachinefile | tail -1 | cut -d ":" -f2-)
+
+if [ "$primary" == "cactus" ]; then
+  desmachine=emc.lam@ddxfer.wcoss2.ncep.noaa.gov
+else
+  desmachine=emc.lam@cdxfer.wcoss2.ncep.noaa.gov
+fi
+
+#sourcemachine=emc.lam@ddxfer.wcoss2.ncep.noaa.gov
+#desmachine=emc.lam@cdxfer.wcoss2.ncep.noaa.gov
+
+#for hourback  in 1 2 3 4 5 6
+for hourback  in 1 2 3 4 5 6
+do
+  #YYYYMMDDHH=`date +"%Y%m%d%H" -d "${CURRENTDATE} ${minsback} minute ago"`
+  #currentdate=`date +"%Y%m%d %H"`
+  YYYYMMDDHH=`$NDATE -$hourback`
+
+  PDY=`echo ${YYYYMMDDHH} | cut -c1-8`
+  cyc=`echo ${YYYYMMDDHH} | cut -c9-10`
+
+  proddir=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/logs
+  proddir1=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/logs/rrfs_a.${PDY}
+  destination=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.3.8_${primary}/log
+  destination1=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.3.8_${primary}/log/rrfs_a.$PDY
+  #build "log" directory
+  touch $proddir/dummy
+  rsync -aq $proddir/dummy $desmachine:$destination/
+  #build "rrfs_a.$PDY" directory
+  touch $proddir1/dummy
+  rsync -aq $proddir1/dummy $desmachine:$destination1/
+  rsync -arv $proddir1/$cyc $desmachine:$destination1
+done
+
+exit

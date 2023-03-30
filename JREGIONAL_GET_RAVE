@@ -1,0 +1,15 @@
+#!/bin/bash
+
+module purge
+module load prod_envir/2.0.6
+module load prod_util/2.0.13
+
+set -ax
+
+WORKDIR=/lfs/h2/emc/lam/noscrub/emc.lam/RAVE_rawdata/RAVE_NA
+cd $WORKDIR
+
+std=`date +%Y%m%d%H`
+download_time=`$NDATE -2 ${std}`
+
+wget ftp://ftp.star.nesdis.noaa.gov/pub/smcd/spb/shobha/xu/RAVE3kmFireEmissions_NA/Hourly_Emissions_3km_${download_time}00_${download_time}00.nc
