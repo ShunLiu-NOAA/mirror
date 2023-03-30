@@ -41,12 +41,12 @@ do
    if [ "$cyc" == $i ]; then
 
      proddir_day=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod_enfcst/rrfs_a.${PDY}
-     destination_day=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.3.8_${primary}/prod_enfcst
+     destination_day=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/prod_enfcst
      touch $proddir_day/dummy
      rsync -aq $proddir_day/dummy $desmachine:$destination_day/
 
      proddir_day_cyc=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod_enfcst/rrfs_a.${PDY}/${cyc}
-     destination_day_cyc=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.3.8_${primary}/prod_enfcst/rrfs_a.${PDY}
+     destination_day_cyc=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/prod_enfcst/rrfs_a.${PDY}
      touch $proddir_day_cyc/dummy
      rsync -aq $proddir_day_cyc/dummy $desmachine:$destination_day_cyc/
 
