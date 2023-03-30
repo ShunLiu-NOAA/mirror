@@ -40,8 +40,8 @@ do
   proddir=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs_a.${PDY}/${cyc}
   proddir_spinup=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs_a.${PDY}/${cyc}_spinup
   proddir1=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs_a.${PDY}
-  destination=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.3.8_${primary}/prod/rrfs_a.${PDY}
-  destination1=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.3.8_${primary}/prod
+  destination=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/prod/rrfs_a.${PDY}
+  destination1=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/prod
   touch $proddir1/dummy
   rsync -aq $proddir1/dummy $desmachine:$destination/
   rsync -arv $proddir $desmachine:$destination
