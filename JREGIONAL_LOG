@@ -36,8 +36,8 @@ do
 
   proddir=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/logs
   proddir1=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/logs/rrfs_a.${PDY}
-  destination=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/log
-  destination1=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/log/rrfs_a.$PDY
+  destination=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/logs
+  destination1=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/logs/rrfs_a.$PDY
   #build "log" directory
   touch $proddir/dummy
   rsync -aq $proddir/dummy $desmachine:$destination/
