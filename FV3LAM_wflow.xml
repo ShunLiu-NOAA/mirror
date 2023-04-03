@@ -20,7 +20,7 @@ Workflow task names.
 <!ENTITY NWGES_TN      "mirror_nwges">
 <!ENTITY LOG_TN      "mirror_log">
 
-<!ENTITY TAG                  "c3v38">
+<!ENTITY TAG                  "c3v40">
 <!ENTITY NET                  "rrfs_a">
 
 <!--
@@ -34,12 +34,12 @@ specifies the number of processes per node being used (the PPN_... entities).
 <!--
 Directories and files.
 -->
-<!ENTITY JOBSDIR                  "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.3.8/mirror">
-<!ENTITY LOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.3.8/logs/rrfs_a.@Y@m@d/@H">
-<!ENTITY CYCLE_BASEDIR            "/lfs/h2/emc/stmp/emc.lam/rrfs/v0.3.8">
-<!ENTITY FG_ROOT                  "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.3.8/nwges">
-<!ENTITY GLOBAL_VAR_DEFNS_FP      "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.3.8/mirror/var_defns.sh">
-<!ENTITY LOAD_MODULES_RUN_TASK_FP "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.3.8/ufs-srweather-app/regional_workflow/ush/load_modules_run_task.sh">
+<!ENTITY JOBSDIR                  "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.4.0/mirror">
+<!ENTITY LOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/logs/rrfs.@Y@m@d/@H">
+<!ENTITY CYCLE_BASEDIR            "/lfs/h2/emc/stmp/emc.lam/rrfs/v0.4.0">
+<!ENTITY FG_ROOT                  "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/nwges">
+<!ENTITY GLOBAL_VAR_DEFNS_FP      "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.4.0/mirror/var_defns.sh">
+<!ENTITY LOAD_MODULES_RUN_TASK_FP "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.4.0/ufs-srweather-app/regional_workflow/ush/load_modules_run_task.sh">
 
 <!--
 Reservation types.  Reservations specify the queue/partition and account
@@ -83,10 +83,10 @@ define resources used for each tasks
 ]>
 <workflow realtime="T" scheduler="&SCHED;" cyclethrottle="28" cyclelifespan="00:28:00:00">
 
-  <cycledef group="spinupcyc"> 00 03-08,15-20 * 03 2023 * </cycledef>
-  <cycledef group="prodcyc"> 00 01-05,07-11,13-17,19-23 * 03 2023 * </cycledef>
-  <cycledef group="prodcyc_long"> 00 00,06,12,18 * 03 2023 * </cycledef>
-  <cycledef group="hourly"> 00 * * 03 2023 * </cycledef>
+  <cycledef group="spinupcyc"> 00 03-08,15-20 * 03,04,05 2023 * </cycledef>
+  <cycledef group="prodcyc"> 00 01-05,07-11,13-17,19-23 * 03,04,05 2023 * </cycledef>
+  <cycledef group="prodcyc_long"> 00 00,06,12,18 * 03,04 2023 * </cycledef>
+  <cycledef group="hourly"> 00 * * 03,04,05 2023 * </cycledef>
 
   <log>
     <cyclestr>&LOGDIR;/mirror_wflow.log</cyclestr>
