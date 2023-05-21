@@ -8,6 +8,7 @@ set -x
 # mirror  RRFSUPP files from prod to dev
 #PDY=20230308
 #cyc=02
+version=$RRFSVER
 
 CURRENTDATE=$PDY$CYC
 
@@ -37,12 +38,12 @@ do
   cyc=`echo ${YYYYMMDDHH} | cut -c9-10`
 
   proddir_nwges=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/nwges
-  destination_nwges=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/nwges
+  destination_nwges=/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges
   touch $proddir_nwges/dummy
   rsync -aq $proddir_nwges/dummy $desmachine:$destination_nwges/
 
   proddir_day=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/nwges/${PDY}${cyc}
-  destination_day=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/nwges/${PDY}${cyc}
+  destination_day=/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/nwges/${PDY}${cyc}
   touch $proddir_day/dummy
   rsync -aq $proddir_day/dummy $desmachine:$destination_day/
   rsync -arv $proddir_day/fcst_fv3lam $desmachine:$destination_day
@@ -50,7 +51,9 @@ do
   rsync -arv $proddir_nwges/enkf_diag $desmachine:$destination_nwges
   rsync -arv $proddir_nwges/observer_diag $desmachine:$destination_nwges
   rsync -arv $proddir_nwges/satbias $desmachine:$destination_nwges
+  rsync -arv $proddir_nwges/satbias_ensmean $desmachine:$destination_nwges
   rsync -arv $proddir_nwges/RAVE_INTP $desmachine:$destination_nwges
+  rsync -arv $proddir_nwges/surface $desmachine:$destination_nwges
 
   for i in $indx
   do
