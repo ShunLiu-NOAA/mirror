@@ -7,17 +7,17 @@ module load craype-network-ofi
 module load envvar/1.0
 module load core/rocoto/1.3.5
 
-cyctime=202303171900
+cyctime=202305081200
 #rocotostat -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c all
 
-test=16
+test=15
 
 case $test in
 11)
 taskname=mirror_spinup
 ;;
 12)
-taskname=mirror_prod
+taskname=mirror_prod_prod
 ;;
 13)
 taskname=mirror_enfcst
@@ -30,6 +30,9 @@ taskname=mirror_log
 ;;
 16)
 taskname=mirror_nwges
+;;
+17)
+taskname=mirror_mlog
 ;;
 esac
 
