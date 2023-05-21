@@ -8,6 +8,7 @@ set -x
 # mirror  RRFSUPP files from prod to dev
 #PDY=20230308
 #cyc=02
+version=$RRFSVER
 
 CURRENTDATE=$PDY$CYC
 
@@ -37,11 +38,11 @@ do
   PDY=`echo ${YYYYMMDDHH} | cut -c1-8`
   cyc=`echo ${YYYYMMDDHH} | cut -c9-10`
 
-  proddir=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs_a.${PDY}/${cyc}
-  proddir_spinup=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs_a.${PDY}/${cyc}_spinup
-  proddir1=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs_a.${PDY}
-  destination=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/prod/rrfs_a.${PDY}
-  destination1=/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.4.0/prod
+  proddir=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs.${PDY}/${cyc}
+  proddir_spinup=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs.${PDY}/${cyc}_spinup
+  proddir1=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs.${PDY}
+  destination=/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/prod/rrfs.${PDY}
+  destination1=/lfs/h2/emc/ptmp/emc.lam/rrfs/${version}/prod
   touch $proddir1/dummy
   rsync -aq $proddir1/dummy $desmachine:$destination/
   rsync -arv $proddir $desmachine:$destination
@@ -49,7 +50,7 @@ do
   for i in $indx
   do
    if [ "$cyc" == $i ]; then
-     proddir_spinup=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs_a.${PDY}/${cyc}_spinup
+     proddir_spinup=/lfs/h2/emc/ptmp/emc.lam/rrfs/conus/prod/rrfs.${PDY}/${cyc}_spinup
      rsync -arv $proddir_spinup $desmachine:$destination
    fi
   done
