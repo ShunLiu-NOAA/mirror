@@ -1,0 +1,48 @@
+#!/bin/sh
+
+module load hpss
+# This script pulls MRMS data from the NOAA HPSS
+# Top-level MRMS directory
+set -x
+mrms_dir=/lfs/h2/emc/ptmp/emc.lam/rrfs_obs/mrms
+SCRIPTSDIR=/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/${RRFSVER}/met_verif/pull_obs
+mrmsraw=/lfs/h1/ops/prod/dcom/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQCComposite
+
+#CDATE='ccycle'
+#CDATE=$PDY
+#CDATE=2023052600
+echo $CDATE
+
+if [[ ! -d "$mrms_dir" ]]; then
+  mkdir -p $mrms_dir
+fi
+
+# MRMS data from HPSS
+mrms_raw=$mrms_dir/raw
+if [[ ! -d "$mrms_raw" ]]; then
+  mkdir -p $mrms_raw
+fi
+
+# Reorganized MRMS location
+mrms_proc=$mrms_dir/proc
+if [[ ! -d "$mrms_proc" ]]; then
+  mkdir -p $mrms_proc
+fi
+
+# Initialization
+yyyymmdd=${CDATE:0:8}
+hh=${CDATE:8:2}
+cyc=$hh
+
+#mrms00file=:w
+mkdir -p $mrms_dir/proc/$yyyymmdd
+cd $mrms_dir/proc/$yyyymmdd
+
+cp $mrmsraw/MergedReflectivityQCComposite_00.50_${yyyymmdd}-${hh}00*.grib2.gz .
+gunzip MergedReflectivityQCComposite_00.50_${yyyymmdd}-${hh}00*.grib2.gz
+orig_flnm=`ls MergedReflectivityQCComposite_00.50_${yyyymmdd}-${hh}00*.grib2`
+mv $orig_flnm MergedReflectivityQCComposite_00.50_${yyyymmdd}-${hh}0000.grib2
+rm -f *.gz
+
+
+
