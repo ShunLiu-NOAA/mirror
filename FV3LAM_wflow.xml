@@ -14,10 +14,27 @@ Parameters needed by the job scheduler.
 <!--
 Workflow task names.
 -->
-<!ENTITY PULL_REFC_TN      "verify_pull_refc">
-<!ENTITY VERIFY_REFC_TN      "verify_verify_refc">
+<!ENTITY MIRROR_TN      "mirror_prod">
+<!ENTITY GET_RAVE_TN      "mirror_get_rave">
+<!ENTITY ENFCST_TN      "mirror_enfcst">
+<!ENTITY ENFCST1_TN      "mirror_enfcst1">
+<!ENTITY ENFCST2_TN      "mirror_enfcst2">
+<!ENTITY ENFCST3_TN      "mirror_enfcst3">
+<!ENTITY ENFCST4_TN      "mirror_enfcst4">
+<!ENTITY ENFCST5_TN      "mirror_enfcst5">
+<!ENTITY MENFCST_TN      "mirror_menfcst">
+<!ENTITY MENFCST1_TN      "mirror_menfcst1">
+<!ENTITY MENFCST2_TN      "mirror_menfcst2">
+<!ENTITY MENFCST3_TN      "mirror_menfcst3">
+<!ENTITY MENFCST4_TN      "mirror_menfcst4">
+<!ENTITY MENFCST5_TN      "mirror_menfcst5">
+<!ENTITY ENSPOST_SINGLE_TN      "mirror_enspost_single">
+<!ENTITY NWGES_TN      "mirror_nwges">
+<!ENTITY NWGES_enkf_TN      "mirror_nwges_enkf">
+<!ENTITY LOG_TN      "mirror_log">
+<!ENTITY MLOG_TN      "mirror_mlog">
 
-<!ENTITY TAG                  "c3v50_verify">
+<!ENTITY TAG                  "c3v50">
 <!ENTITY RRFSVER              "v0.5.0">
 <!ENTITY NET                  "rrfs_a">
 
@@ -32,12 +49,13 @@ specifies the number of processes per node being used (the PPN_... entities).
 <!--
 Directories and files.
 -->
-<!ENTITY JOBSDIR                  "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/&RRFSVER;/met_verif/workflow">
-<!ENTITY LOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/&RRFSVER;/logs/rrfs.@Y@m@d/@H">
-<!ENTITY CYCLE_BASEDIR            "/lfs/h2/emc/stmp/emc.lam/rrfs/&RRFSVER;">
-<!ENTITY FG_ROOT                  "/lfs/h2/emc/ptmp/emc.lam/rrfs/&RRFSVER;/nwges">
-<!ENTITY GLOBAL_VAR_DEFNS_FP      "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/&RRFSVER;/met_verif/var_defns.sh">
-<!ENTITY LOAD_MODULES_RUN_TASK_FP "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/&RRFSVER;/ufs-srweather-app/regional_workflow/ush/load_modules_run_task.sh">
+<!ENTITY JOBSDIR                  "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.5.0/mirror">
+<!ENTITY LOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.5.0/logs/rrfs.@Y@m@d/@H">
+<!ENTITY MLOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.5.0/mphysc/logs/refs.@Y@m@d/@H">
+<!ENTITY CYCLE_BASEDIR            "/lfs/h2/emc/stmp/emc.lam/rrfs/v0.5.0">
+<!ENTITY FG_ROOT                  "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.5.0/nwges">
+<!ENTITY GLOBAL_VAR_DEFNS_FP      "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.5.0/mirror/var_defns.sh">
+<!ENTITY LOAD_MODULES_RUN_TASK_FP "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.5.0/ufs-srweather-app/regional_workflow/ush/load_modules_run_task.sh">
 
 <!--
 Reservation types.  Reservations specify the queue/partition and account
@@ -62,79 +80,551 @@ define resources used for each tasks
 
 <!ENTITY DEADLINE_MIRROR      "36:00:00">
 
-<!ENTITY START_TIME_PULL "01:10:00">
+<!ENTITY START_TIME_MIRROR "01:10:00">
+<!ENTITY START_TIME_ENFCST "02:20:00">
+<!ENTITY START_TIME_ENSPOST "04:50:00">
+<!ENTITY START_TIME_GET_RAVE "00:10:00">
+<!ENTITY START_TIME_NWGES "00:10:00">
 <!ENTITY WALL_LIMIT_MIRROR '<deadline><cyclestr offset="&DEADLINE_MIRROR;">@Y@m@d@H@M</cyclestr></deadline>'>
 
 
+<!ENTITY STARTYEAR  "2023">
+<!ENTITY STARTMONTH "2">
+<!ENTITY STARTDAY   "1">
+<!ENTITY STARTHOUR  "0">
+
+<!ENTITY ENDYEAR  "2023">
+<!ENTITY ENDMONTH "3">
+<!ENTITY ENDDAY   "31">
+<!ENTITY ENDHOUR  "23">
+
 ]>
+<workflow realtime="T" scheduler="&SCHED;" cyclethrottle="28" cyclelifespan="00:28:00:00">
 
-<workflow realtime="F" scheduler="&SCHED;" cyclethrottle="24" cyclelifespan="00:28:00:00">
-
-  <cycledef group="hourly"> 202305230000 202305252300 1:00:00 </cycledef>
-  <cycledef group="6hourly"> 202305230000 202305252300 6:00:00 </cycledef>
-
+  <cycledef group="spinupcyc"> 00 03-08,15-20 * 05,06 2023 * </cycledef>
+  <cycledef group="prodcyc"> 00 01-05,07-11,13-17,19-23 * 05,06 2023 * </cycledef>
+  <cycledef group="prodcyc_long"> 00 00,06,12,18 * 05,06 2023 * </cycledef>
+  <cycledef group="hourly"> 00 * * 05,06 2023 * </cycledef>
 
   <log>
-    <cyclestr>&LOGDIR;/verify_wflow.log</cyclestr>
+    <cyclestr>&LOGDIR;/mirror_wflow.log</cyclestr>
   </log>
 
-<task name="&PULL_REFC_TN;" cycledefs="hourly"  maxtries="1">
+<!-- beginning of meta block for prod spinup  -->
+<metatask name="data_preprocessing">
+  <var name="cycletype">spinupcyc prodcyc,prodcyc_long</var>
+  <var name="type">spinup prod</var>
+
+  <task name="&MIRROR_TN;_#type#" cycledefs="#cycletype#"  maxtries="1">
+    
+    &RSRV_MIRROR;
+
+    <command>"&JOBSDIR;/JREGIONAL_MIRROR"</command>
+      
+    &RESOURCES_PROC;
+    <memory>32G</memory>
+    <walltime>&WALLTIME_PROC_RADAR;</walltime>
+
+    <jobname>&TAG;_&MIRROR_TN;_#type#</jobname>
+    <join><cyclestr>&LOGDIR;/&MIRROR_TN;_#type#_@Y@m@d@H.log</cyclestr></join>
+        
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_TYPE</name><value><cyclestr>#type#</cyclestr></value></envar>
+        
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_MIRROR;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+  </task>
+
+</metatask>
+
+<task name="&ENFCST_TN;" cycledefs="hourly"  maxtries="2">
+    
+    &RSRV_MIRROR;
+    
+    <command>"&JOBSDIR;/JREGIONAL_ENFCST"</command>
+    
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+    
+    <jobname>&TAG;_&ENFCST_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&ENFCST_TN;_@Y@m@d@H.log</cyclestr></join>
+    
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_ENFCST;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&ENFCST1_TN;" cycledefs="hourly"  maxtries="2">
 
     &RSRV_MIRROR;
 
-    <command>"&JOBSDIR;/JREGIONAL_PULL_REFC"</command>
+    <command>"&JOBSDIR;/JREGIONAL_ENFCST1"</command>
+    
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+    
+    <jobname>&TAG;_&ENFCST1_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&ENFCST1_TN;_@Y@m@d@H.log</cyclestr></join>
+    
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_ENFCST;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&ENFCST2_TN;" cycledefs="hourly"  maxtries="2">
+
+    &RSRV_MIRROR;
+
+    <command>"&JOBSDIR;/JREGIONAL_ENFCST2"</command>
+    
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+    
+    <jobname>&TAG;_&ENFCST2_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&ENFCST2_TN;_@Y@m@d@H.log</cyclestr></join>
+    
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_ENFCST;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&ENFCST3_TN;" cycledefs="hourly"  maxtries="2">
+
+    &RSRV_MIRROR;
+
+    <command>"&JOBSDIR;/JREGIONAL_ENFCST3"</command>
+    
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+    
+    <jobname>&TAG;_&ENFCST3_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&ENFCST3_TN;_@Y@m@d@H.log</cyclestr></join>
+    
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_ENFCST;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&ENFCST4_TN;" cycledefs="hourly"  maxtries="2">
+
+    &RSRV_MIRROR;
+
+    <command>"&JOBSDIR;/JREGIONAL_ENFCST4"</command>
+    
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+    
+    <jobname>&TAG;_&ENFCST4_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&ENFCST4_TN;_@Y@m@d@H.log</cyclestr></join>
+    
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_ENFCST;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&ENFCST5_TN;" cycledefs="hourly"  maxtries="2">
+
+    &RSRV_MIRROR;
+
+    <command>"&JOBSDIR;/JREGIONAL_ENFCST5"</command>
+    
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+    
+    <jobname>&TAG;_&ENFCST5_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&ENFCST5_TN;_@Y@m@d@H.log</cyclestr></join>
+    
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_ENFCST;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&MENFCST_TN;" cycledefs="hourly"  maxtries="2">
+    
+    &RSRV_MIRROR;
+    
+    <command>"&JOBSDIR;/JREGIONAL_MENFCST"</command>
+    
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+    
+    <jobname>&TAG;_&MENFCST_TN;</jobname>
+    <join><cyclestr>&MLOGDIR;/&MENFCST_TN;_@Y@m@d@H.log</cyclestr></join>
+    
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_ENFCST;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&MENFCST1_TN;" cycledefs="hourly"  maxtries="2">
+    
+    &RSRV_MIRROR;
+    
+    <command>"&JOBSDIR;/JREGIONAL_MENFCST1"</command>
+    
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+    
+    <jobname>&TAG;_&MENFCST1_TN;</jobname>
+    <join><cyclestr>&MLOGDIR;/&MENFCST1_TN;_@Y@m@d@H.log</cyclestr></join>
+    
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_ENFCST;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&MENFCST2_TN;" cycledefs="hourly"  maxtries="2">
+    
+    &RSRV_MIRROR;
+    
+    <command>"&JOBSDIR;/JREGIONAL_MENFCST2"</command>
+    
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+    
+    <jobname>&TAG;_&MENFCST2_TN;</jobname>
+    <join><cyclestr>&MLOGDIR;/&MENFCST2_TN;_@Y@m@d@H.log</cyclestr></join>
+    
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_ENFCST;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&MENFCST3_TN;" cycledefs="hourly"  maxtries="2">
+    
+    &RSRV_MIRROR;
+    
+    <command>"&JOBSDIR;/JREGIONAL_MENFCST3"</command>
+    
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+    
+    <jobname>&TAG;_&MENFCST3_TN;</jobname>
+    <join><cyclestr>&MLOGDIR;/&MENFCST3_TN;_@Y@m@d@H.log</cyclestr></join>
+    
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_ENFCST;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&MENFCST4_TN;" cycledefs="hourly"  maxtries="2">
+    
+    &RSRV_MIRROR;
+    
+    <command>"&JOBSDIR;/JREGIONAL_MENFCST4"</command>
+    
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+    
+    <jobname>&TAG;_&MENFCST4_TN;</jobname>
+    <join><cyclestr>&MLOGDIR;/&MENFCST4_TN;_@Y@m@d@H.log</cyclestr></join>
+    
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_ENFCST;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&MENFCST5_TN;" cycledefs="hourly"  maxtries="2">
+    
+    &RSRV_MIRROR;
+    
+    <command>"&JOBSDIR;/JREGIONAL_MENFCST5"</command>
+    
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+    
+    <jobname>&TAG;_&MENFCST5_TN;</jobname>
+    <join><cyclestr>&MLOGDIR;/&MENFCST5_TN;_@Y@m@d@H.log</cyclestr></join>
+    
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_ENFCST;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+
+
+<task name="&GET_RAVE_TN;" cycledefs="hourly"  maxtries="1">
+
+    &RSRV_MIRROR;
+
+    <command>"&JOBSDIR;/JREGIONAL_GET_RAVE"</command>
+
+    &RESOURCES_PROC;
+    <memory>1G</memory>
+    <walltime>&WALLTIME_PROC_RADAR;</walltime>
+
+    <jobname>&TAG;_&GET_RAVE_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&GET_RAVE_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_GET_RAVE;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&NWGES_TN;" cycledefs="hourly"  maxtries="1">
+
+    &RSRV_MIRROR;
+
+    <command>"&JOBSDIR;/JREGIONAL_NWGES"</command>
+
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+
+    <jobname>&TAG;_&NWGES_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&NWGES_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_NWGES;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+<task name="&NWGES_enkf_TN;" cycledefs="hourly"  maxtries="1">
+
+    &RSRV_MIRROR;
+
+    <command>"&JOBSDIR;/JREGIONAL_NWGES_enkf"</command>
+
+    &RESOURCES_PROC;
+    <memory>8G</memory>
+    <walltime>&WALLTIME_ENFCST;</walltime>
+
+    <jobname>&TAG;_&NWGES_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&NWGES_enkf_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+
+    <dependency>
+      <and>
+        <timedep><cyclestr offset="&START_TIME_NWGES;">@Y@m@d@H@M00</cyclestr></timedep>
+      </and>
+    </dependency>
+
+</task>
+
+
+<task name="&LOG_TN;" cycledefs="hourly"  maxtries="1">
+
+    &RSRV_MIRROR;
+
+    <command>"&JOBSDIR;/JREGIONAL_LOG"</command>
 
     &RESOURCES_PROC; 
     <memory>8G</memory>
     <walltime>&WALLTIME_PROC_RADAR;</walltime>
 
-    <jobname>&TAG;_&PULL_REFC_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&PULL_REFC_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&LOG_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&LOG_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr offset="-00:00:00">@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
 
     <dependency>
       <and>
-        <timedep><cyclestr offset="&START_TIME_PULL;">@Y@m@d@H@M00</cyclestr></timedep>
+        <timedep><cyclestr offset="&START_TIME_NWGES;">@Y@m@d@H@M00</cyclestr></timedep>
       </and>
     </dependency>
   
 </task>
 
-<?ignore
-<task name="&VERIFY_REFC_TN;" cycledefs="hourly"  maxtries="1">
+<task name="&MLOG_TN;" cycledefs="hourly"  maxtries="1">
 
     &RSRV_MIRROR;
 
-    <command>"&JOBSDIR;/JREGIONAL_VERIFY_REFC"</command>
+    <command>"&JOBSDIR;/JREGIONAL_MLOG"</command>
 
-    &RESOURCES_PROC;
+    &RESOURCES_PROC; 
     <memory>8G</memory>
     <walltime>&WALLTIME_PROC_RADAR;</walltime>
 
-    <jobname>&TAG;_&VERIFY_REFC_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VERIFY_REFC_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&TAG;_&MLOG_TN;</jobname>
+    <join><cyclestr>&MLOGDIR;/&MLOG_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>RRFSVER</name><value>&RRFSVER;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>CYC</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr offset="-0:00:00">@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
 
     <dependency>
       <and>
-        <timedep><cyclestr offset="&START_TIME_PULL;">@Y@m@d@H@M00</cyclestr></timedep>
+        <timedep><cyclestr offset="&START_TIME_NWGES;">@Y@m@d@H@M00</cyclestr></timedep>
       </and>
     </dependency>
-
+  
 </task>
-?>
+
 
 
 </workflow>
