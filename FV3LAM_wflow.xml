@@ -34,8 +34,8 @@ Workflow task names.
 <!ENTITY LOG_TN      "mirror_log">
 <!ENTITY MLOG_TN      "mirror_mlog">
 
-<!ENTITY TAG                  "c3v50">
-<!ENTITY RRFSVER              "v0.5.0">
+<!ENTITY TAG                  "c3v52">
+<!ENTITY RRFSVER              "v0.5.2">
 <!ENTITY NET                  "rrfs_a">
 
 <!--
@@ -49,13 +49,13 @@ specifies the number of processes per node being used (the PPN_... entities).
 <!--
 Directories and files.
 -->
-<!ENTITY JOBSDIR                  "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.5.0/mirror">
-<!ENTITY LOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.5.0/logs/rrfs.@Y@m@d/@H">
-<!ENTITY MLOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.5.0/mphysc/logs/refs.@Y@m@d/@H">
-<!ENTITY CYCLE_BASEDIR            "/lfs/h2/emc/stmp/emc.lam/rrfs/v0.5.0">
-<!ENTITY FG_ROOT                  "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.5.0/nwges">
-<!ENTITY GLOBAL_VAR_DEFNS_FP      "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.5.0/mirror/var_defns.sh">
-<!ENTITY LOAD_MODULES_RUN_TASK_FP "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.5.0/ufs-srweather-app/regional_workflow/ush/load_modules_run_task.sh">
+<!ENTITY JOBSDIR                  "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.5.2/mirror">
+<!ENTITY LOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.5.2/logs/rrfs.@Y@m@d/@H">
+<!ENTITY MLOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.5.2/mphysc/logs/refs.@Y@m@d/@H">
+<!ENTITY CYCLE_BASEDIR            "/lfs/h2/emc/stmp/emc.lam/rrfs/v0.5.2">
+<!ENTITY FG_ROOT                  "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.5.2/nwges">
+<!ENTITY GLOBAL_VAR_DEFNS_FP      "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.5.2/mirror/var_defns.sh">
+<!ENTITY LOAD_MODULES_RUN_TASK_FP "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.5.2/ufs-srweather-app/regional_workflow/ush/load_modules_run_task.sh">
 
 <!--
 Reservation types.  Reservations specify the queue/partition and account
