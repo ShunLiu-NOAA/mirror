@@ -7,7 +7,7 @@ module load craype-network-ofi
 module load envvar/1.0
 module load core/rocoto/1.3.5
 
-cyctime=202305081200
+cyctime=202305310300
 #rocotostat -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c all
 
 test=15
