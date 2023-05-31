@@ -1,0 +1,44 @@
+#!/bin/bash
+
+module purge
+module use /apps/ops/test/nco/modulefiles
+module load craype-x86-rome 
+module load libfabric/1.11.0.0. 
+module load craype-network-ofi 
+module load envvar/1.0
+module load core/rocoto/1.3.5
+
+module list
+
+cyctime=202305310000
+#rocotostat -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c all
+tasks="mirror_prod_prod mirror_enfcst mirror_enfcst1 mirror_enfcst2 mirror_enfcst3 mirror_enfcst4 mirror_enfcst5 mirror_menfcst mirror_menfcst1 mirror_menfcst2 mirror_menfcst3 mirror_menfcst4 mirror_menfcst5 mirror_get_rave mirror_log mirror_mlog"
+
+#mirror_nwges
+#mirror_nwges_enkf
+
+for taskname in $tasks; do
+  echo $itask
+  rocotorewind -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c $cyctime -t $taskname
+  rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c $cyctime -t $taskname
+done
+
+exit
+
+
+
+#mytaskname=save_restart_ensinit_mem
+mytaskname=prep_cyc_spinup_ensinit_mem
+
+#for i in $(seq -f "%04g" 0 30)
+for i in $(seq -f "%04g" 14 17)
+do
+  taskname=$mytaskname$i
+  echo $i, $taskname
+  #rocotocheck -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c $cyctime -t $taskname
+  rocotorewind -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c $cyctime -t $taskname
+  rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c $cyctime -t $taskname
+done
+
+#rocotorewind -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c $cyctime -m $taskname
+#rocotoboot -w FV3LAM_wflow.xml -d FV3LAM_wflow.db -c $cyctime -m $taskname
