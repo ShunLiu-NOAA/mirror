@@ -49,13 +49,13 @@ specifies the number of processes per node being used (the PPN_... entities).
 <!--
 Directories and files.
 -->
-<!ENTITY JOBSDIR                  "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.5.2/mirror">
-<!ENTITY LOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.5.2/logs/rrfs.@Y@m@d/@H">
-<!ENTITY MLOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.5.2/mphysc/logs/refs.@Y@m@d/@H">
-<!ENTITY CYCLE_BASEDIR            "/lfs/h2/emc/stmp/emc.lam/rrfs/v0.5.2">
-<!ENTITY FG_ROOT                  "/lfs/h2/emc/ptmp/emc.lam/rrfs/v0.5.2/nwges">
-<!ENTITY GLOBAL_VAR_DEFNS_FP      "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.5.2/mirror/var_defns.sh">
-<!ENTITY LOAD_MODULES_RUN_TASK_FP "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/v0.5.2/ufs-srweather-app/regional_workflow/ush/load_modules_run_task.sh">
+<!ENTITY JOBSDIR                  "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/&RRFSVER;/mirror">
+<!ENTITY LOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/&RRFSVER;/logs/rrfs.@Y@m@d/@H">
+<!ENTITY MLOGDIR                   "/lfs/h2/emc/ptmp/emc.lam/rrfs/&RRFSVER;/mphysc/logs/refs.@Y@m@d/@H">
+<!ENTITY CYCLE_BASEDIR            "/lfs/h2/emc/stmp/emc.lam/rrfs/&RRFSVER;">
+<!ENTITY FG_ROOT                  "/lfs/h2/emc/ptmp/emc.lam/rrfs/&RRFSVER;/nwges">
+<!ENTITY GLOBAL_VAR_DEFNS_FP      "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/&RRFSVER;/mirror/var_defns.sh">
+<!ENTITY LOAD_MODULES_RUN_TASK_FP "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/&RRFSVER;/ufs-srweather-app/regional_workflow/ush/load_modules_run_task.sh">
 
 <!--
 Reservation types.  Reservations specify the queue/partition and account
